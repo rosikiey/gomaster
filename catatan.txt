@@ -1,0 +1,33 @@
+*docker*
+docker pull postgres:16.1-alpine
+docker run -d --name postgresCont -p 5432:5432 -e POSTGRES_PASSWORD=Veg@zr01 postgres:16.1-alpine
+
+*migrate*
+create makefile
+1.jalankan make migration
+2.jalankan make migrateup
+3.jalankan make migratedown
+
+di folder postgres migration ada create down dan create up yang berisi perintah2 sql
+jika eror dirty database version,delete data di table schema_migration terus migrasi ulang ( migrateup )ß
+
+*sqlc*.
+di dalam folder buat file sqcl.yaml dan di setting sesuai contoh
+setelah oke jalankan
+    - sqlc generate
+biasanya habis itu eroor karena belum add driver go postgres dan jalankan
+    - go get -u github.com/jackc/pgx/v5
+
+sqlc v2
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "./postgres/query/"
+    schema: "./postgres/migrations/"
+    gen:
+      go:
+        package: "gomaster"
+        out: "gomaster"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: true

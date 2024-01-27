@@ -7,7 +7,28 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 )
+
+const createTodo = `-- name: CreateTodo :one
+insert INTO TODOS (NAME) values ($1) returning id, name, completed
+`
+
+func (q *Queries) CreateTodo(ctx context.Context, name string) (Todo, error) {
+	row := q.queryRow(ctx, q.createTodoStmt, createTodo, name)
+	var i Todo
+	err := row.Scan(&i.ID, &i.Name, &i.Completed)
+	return i, err
+}
+
+const deleteTodobyId = `-- name: DeleteTodobyId :exec
+DELETE FROM TODOS WHERE ID = $1
+`
+
+func (q *Queries) DeleteTodobyId(ctx context.Context, id int64) error {
+	_, err := q.exec(ctx, q.deleteTodobyIdStmt, deleteTodobyId, id)
+	return err
+}
 
 const gettodo = `-- name: Gettodo :many
 SELECT id, name, completed FROM todos
@@ -37,11 +58,28 @@ func (q *Queries) Gettodo(ctx context.Context) ([]Todo, error) {
 }
 
 const gettodosinggle = `-- name: Gettodosinggle :one
-SELECT id, name, completed FROM todos where limits = 1
+SELECT id, name, completed FROM todos where id = $1 limit 1
 `
 
-func (q *Queries) Gettodosinggle(ctx context.Context) (Todo, error) {
-	row := q.queryRow(ctx, q.gettodosinggleStmt, gettodosinggle)
+func (q *Queries) Gettodosinggle(ctx context.Context, id int64) (Todo, error) {
+	row := q.queryRow(ctx, q.gettodosinggleStmt, gettodosinggle, id)
+	var i Todo
+	err := row.Scan(&i.ID, &i.Name, &i.Completed)
+	return i, err
+}
+
+const updateTodo = `-- name: UpdateTodo :one
+UPDATE TODOS SET NAME = $2, COMPLETED = $3 WHERE ID = $1 returning id, name, completed
+`
+
+type UpdateTodoParams struct {
+	ID        int64        `json:"id"`
+	Name      string       `json:"name"`
+	Completed sql.NullBool `json:"completed"`
+}
+
+func (q *Queries) UpdateTodo(ctx context.Context, arg UpdateTodoParams) (Todo, error) {
+	row := q.queryRow(ctx, q.updateTodoStmt, updateTodo, arg.ID, arg.Name, arg.Completed)
 	var i Todo
 	err := row.Scan(&i.ID, &i.Name, &i.Completed)
 	return i, err

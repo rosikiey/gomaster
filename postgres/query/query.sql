@@ -7,8 +7,8 @@ SELECT * FROM todos where id = $1 limit 1;
 -- name: CreateTodo :one
 insert INTO TODOS (NAME) values ($1) returning *;
 
--- name: DeleteTodobyId :one
+-- name: DeleteTodobyId :exec
 DELETE FROM TODOS WHERE ID = $1;
 
 -- name: UpdateTodo :one
-UPDATE TODOS SET NAME = $2M, COMPLETED = $3 WHERE ID = $1 returning *;
+UPDATE TODOS SET NAME = $2, COMPLETED = $3 WHERE ID = $1 returning *;

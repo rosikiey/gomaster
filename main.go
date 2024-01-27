@@ -99,7 +99,7 @@ func (h *Handlers) UpdateTodo(ctx *fiber.Ctx) {
 		return
 	}
 
-	todo, err := h.Repo.GetTodoById(ctx.Context(), int64(id))
+	todo, err := h.Repo.Gettodosinggle(ctx.Context(), int64(id))
 	if err != nil {
 		ctx.Status(fiber.StatusNotFound)
 		return
@@ -142,13 +142,13 @@ func (h *Handlers) DeleteTodo(ctx *fiber.Ctx) {
 		return
 	}
 
-	_, err = h.Repo.GetTodoById(ctx.Context(), int64(id))
+	_, err = h.Repo.Gettodosinggle(ctx.Context(), int64(id))
 	if err != nil {
 		ctx.Status(fiber.StatusNotFound)
 		return
 	}
 
-	err = h.Repo.DeleteTodoById(ctx.Context(), int64(id))
+	err = h.Repo.DeleteTodobyId(ctx.Context(), int64(id))
 	if err != nil {
 		ctx.SendStatus(fiber.StatusNotFound)
 		return
@@ -167,7 +167,7 @@ func (h *Handlers) GetTodo(ctx *fiber.Ctx) {
 		return
 	}
 
-	todo, err := h.Repo.GetTodoById(ctx.Context(), int64(id))
+	todo, err := h.Repo.Gettodosinggle(ctx.Context(), int64(id))
 	if err != nil {
 		ctx.Status(fiber.StatusNotFound)
 		return
@@ -214,7 +214,7 @@ func (h *Handlers) CreateTodo(ctx *fiber.Ctx) {
 }
 
 func (h *Handlers) GetTodos(ctx *fiber.Ctx) {
-	todos, err := h.Repo.GetAllTodos(ctx.Context())
+	todos, err := h.Repo.Gettodo(ctx.Context())
 	if err != nil {
 		ctx.Status(fiber.StatusInternalServerError).Send(err.Error())
 		return

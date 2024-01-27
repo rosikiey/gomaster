@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/fiber/middleware"
 
-	"gomaster/postgres"
+	"github.com/rosikiey/gomaster.git/postgres"
 
 	_ "github.com/lib/pq"
 )

@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber"
@@ -34,7 +33,8 @@ func NewHandlers(repo *postgres.Repo) *Handlers {
 }
 
 func main() {
-	db, err := sql.Open("postgres", fmt.Sprintf("dbname=%s password=postgres user=postgres sslmode=disable", "fiber_todos_dev"))
+	db, err := sql.Open("postgres", "postgres://postgres:Veg@zr01@103.127.99.34:5432/gomaster?sslmode=disable")
+
 	if err != nil {
 		panic(err)
 	}
